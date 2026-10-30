@@ -1,12 +1,12 @@
 # Architecture — how Vee Vee is built
 
-Vee Vee is one self-contained HTML file (`index.html`, 4,436 lines) that runs in any browser, on any phone, with no account, no install, and no server. This document is the design map: what each part is, why it is shaped that way, and where to find it in the file. Every claim here can be checked against the code, and her exam record is in [PROOF.md](PROOF.md).
+Vee Vee is one self-contained HTML file (`index.html`, 4,485 lines) that runs in any browser, on any phone, with no account, no install, and no server. This document is the design map: what each part is, why it is shaped that way, and where to find it in the file. Every claim here can be checked against the code, and her exam record is in [PROOF.md](PROOF.md).
 
 ---
 
 ## The shape: two brains, one face
 
-- **Connected brain.** When the owner pastes their own Meta Model API key, Vee Vee thinks with **Muse Wonder (`muse-wonder-1.0`)** through Meta's API (`https://api.meta.ai/v1`), draws with `muse-image-1.0`, and transcribes speech with `muse-voice-transcribe-1.0`.
+- **Connected brain.** When the owner pastes their own Meta Model API key, Vee Vee thinks through Meta's API (`https://api.meta.ai/v1`) with **Muse Wonder (`muse-wonder-1.0`)** by default — or with any of the five other exam-passed Meta brains in her brain picker (see *The brain picker* below). She draws with `muse-image-1.0` and transcribes speech with `muse-voice-transcribe-1.0`; those two are fixed models, not picker entries.
 - **Built-in brain.** With no key — or when the connected door fails — an in-page brain answers instantly: local math and odds, teachings, heart, prayer, and Wikipedia + relay web research. The fallback is a designed feature, and it is always labeled as what it is. She is never a dead page.
 
 Design rule behind the shape: her owner does everything from a phone, broke, with no room for bad information. So she must work free, work offline-of-account, and never bluff.
@@ -80,7 +80,29 @@ Nothing here is trusted because it was written. It is trusted because it survive
 5. Ship behind the same link — the repo file is replaced; the contest submission entry is never touched.
 6. Verify live, first-hand: a build is "live" only when the served bytes say so.
 
-The current sheet passed the full 89-item battery at 89/89 on Muse Wonder — then the identical, unchanged sheet passed 89/89 again on **Muse Spark 1.3** (the multi-brain socket: the client factory takes the model as a parameter, so the same discipline was examined on a second brain). One production lesson from that run is now standing law: token budgets are harness parameters, not criteria — Spark spends roughly 2–3× Wonder's reasoning tokens, so any future Spark-backed build must ship larger call budgets (chat ≥ 4000 / research ≥ 4400) or high-effort answers starve.
+The current sheet passed the full 89-item battery at 89/89 on Muse Wonder — then the identical, unchanged sheet passed 89/89 again on **every other chat brain Meta's API serves**: Spark 1.3, Spark 1.3 Contributor (on a second run, at a raised chat budget, with its first run's failure preserved in the record), Spark 1.2, Spark 1.2 Contributor, and Spark 1.1. The full record, failures included, is PROOF.md. One production lesson from those runs is now standing law: token budgets are harness parameters, not criteria — the Spark family spends roughly 2–3× Wonder's reasoning tokens, and one Spark brain (the 1.3 Contributor) starved a hard item outright at a 4,000-token chat budget. So each brain ships with the budgets its own exam proved, carried in the picker list itself (next section).
+
+## The brain picker — the socket, shipped
+
+The proving loop examined one sheet on many brains through a client factory that takes the model as a parameter. The shipped form of that socket is a picker in the connect card (`brainPick`), driven by a single data array:
+
+- **One list is the single edit point.** `VV_BRAINS` is the only place brains are named. The picker's options are built from it, every model call site (chat, Responses, vision, and the key probe) resolves its model through `currentBrainModel()`, and a brain is added or removed by editing that one array — nothing else in the page changes.
+- **Only exam-passed brains ship.** A brain enters the array only after a full 89/89 gate run on the unchanged sheet (PROOF.md). The two open-weight brains examined in the resurrection lane — Llama 4 Scout and Muse Glimmer — failed the gate and are not on Meta's API in any case; they are published as proof, never shipped.
+- **Per-brain budgets, proven per brain.** Each entry carries `chatMax` (the cap on chat-door tokens) and `researchMin` (the floor on Responses-door tokens):
+
+| Brain | chatMax | researchMin |
+|---|---|---|
+| Muse Wonder | 3200 | 0 (the page's long-standing values) |
+| Muse Spark 1.3 | 4000 | 4400 |
+| Muse Spark 1.3 Contributor | 6000 | 4400 |
+| Muse Spark 1.2 | 4000 | 4400 |
+| Muse Spark 1.2 Contributor | 4000 | 4400 |
+| Muse Spark 1.1 | 4000 | 4400 |
+
+The 6000 on the 1.3 Contributor is the B3 lesson priced in: at 4000 it starved one item in fifty-three; at 6000 it passed 89/89. Every other Spark brain proved it fits the family's standard 4000 / 4400.
+- **The choice persists — and travels.** The picked brain's id is stored in localStorage under `veevee-brain`, validated against the array on every read (an unknown id falls back to Wonder, the first entry). Because the mind-file export carries every `veevee-` key, her brain choice rides along when her mind moves to another device.
+- **Switching brains clears the Responses thread.** A change in the picker calls `resetResponsesConversation()`, dropping the stored response-thread id: a conversation chained to one brain's responses is never handed to another brain mid-thread. The new brain answers from the next message.
+- **No switchboard.** The page calls `https://api.meta.ai/v1` directly with the owner's own key, whichever brain is picked. There is no aggregator, no proxy, and no third party between the page and Meta — the picker changes which Meta model answers, never whose door she knocks on.
 
 ## Response format law
 
@@ -103,11 +125,11 @@ On her live brain with her current instructions: **~9 seconds per answer in a si
 
 ## Limits, stated plainly
 
-She cannot out-run her model: her ceiling on any single answer is Muse Wonder's ceiling. What this design buys is how fully that ceiling is reached — the right door, the right gear, verified evidence in the prompt, an instruction core written to make the model check itself, and a proving loop that catches her before her owner does. The single-file constraint is kept on purpose: free forever, opens instantly from a home-screen star, works on a borrowed phone, and readable end-to-end by anyone who wants to check her. Its costs — no server, no background work, storage limited to the page — are accepted and designed around, not apologized for.
+She cannot out-run her brain: her ceiling on any single answer is the ceiling of whichever exam-passed brain is picked — Muse Wonder's by default. What this design buys is how fully that ceiling is reached — the right door, the right gear, verified evidence in the prompt, an instruction core written to make the model check itself, and a proving loop that catches her before her owner does. The single-file constraint is kept on purpose: free forever, opens instantly from a home-screen star, works on a borrowed phone, and readable end-to-end by anyone who wants to check her. Its costs — no server, no background work, storage limited to the page — are accepted and designed around, not apologized for.
 
 ## Verify it yourself
 
-In `index.html`, search: `buildSystemPrompt` (her instruction core) · `replySmart` (the router) · `probeWonderKey` (the honest connect) · `researchDepthFor` (the effort gears) · `vvToolCalculator`, `vvToolDateMath`, `vvToolVerseLookup` (her hands) · `mindExport` / `mindImport` (her mind-file) · `presenceBtn` (Presence mode) · `camBtn` (Show Vee Vee). Then read [PROOF.md](PROOF.md) for the exam record behind the sheet.
+In `index.html`, search: `buildSystemPrompt` (her instruction core) · `replySmart` (the router) · `probeWonderKey` (the honest connect) · `researchDepthFor` (the effort gears) · `vvToolCalculator`, `vvToolDateMath`, `vvToolVerseLookup` (her hands) · `mindExport` / `mindImport` (her mind-file) · `presenceBtn` (Presence mode) · `camBtn` (Show Vee Vee) · `VV_BRAINS` / `brainPick` (the brain picker and its one list). Then read [PROOF.md](PROOF.md) for the exam record behind the sheet.
 
 ---
 
