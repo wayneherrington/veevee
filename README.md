@@ -6,7 +6,7 @@
 
 ### ▶ Watch the demo (3:51): https://youtu.be/8zY0_8KRPkE
 
-No app store. No account. Open the link and talk — she answers out loud, in her own words. Free for anyone to use with no key; connect your own Meta Model API key and she thinks with **Muse Wonder (`muse-wonder-1.0`)**, Meta's frontier model.
+No app store. No account. Open the link and talk — she answers out loud, in her own words. Free for anyone to use with no key; connect your own Meta Model API key and she thinks with **Muse Wonder (`muse-wonder-1.0`)**, Meta's frontier model — or with any of the five other Meta brains in her picker, every one of them exam-passed on her unchanged instructions (see below). All six are called directly through Meta's API with your own key. No switchboard, nothing in between.
 
 ---
 
@@ -20,10 +20,10 @@ No app store. No account. Open the link and talk — she answers out loud, in he
 
 ## Not a wrapper: what's actually built in here
 
-Every contest entry runs on Meta's models — that's the point of the contest. What separates an entry is the system built around the model. Vee Vee's is a single self-contained `index.html` — **4,436 lines** — and every claim below can be checked in that file in about two minutes. The design map — router, doors, grounding law, memory, and the proving loop — is [ARCHITECTURE.md](ARCHITECTURE.md).
+Every contest entry runs on Meta's models — that's the point of the contest. What separates an entry is the system built around the model. Vee Vee's is a single self-contained `index.html` — **4,485 lines** — and every claim below can be checked in that file in about two minutes. The design map — router, doors, grounding law, memory, and the proving loop — is [ARCHITECTURE.md](ARCHITECTURE.md).
 
 **Her instruction core was exam-proven, not just written.**
-Her master prompt (search `buildSystemPrompt` in `index.html`) was graded against an 89-question battery: accuracy under false premises, source discipline, privacy refusals, precision under pressure, restored-context recipes, and her local tools. She passed **89/89 in one clean run** — then the *identical, unchanged* instruction core was run against a second Meta brain, **Muse Spark 1.3**, and passed **89/89 again, section for section**. Her discipline lives in what was built around the model, not in one model's habits. The complete exam record — both passes, the failed first run, and what fixed it — is published in [PROOF.md](PROOF.md).
+Her master prompt (search `buildSystemPrompt` in `index.html`) was graded against an 89-question battery: accuracy under false premises, source discipline, privacy refusals, precision under pressure, restored-context recipes, and her local tools. She passed **89/89 in one clean run** on Muse Wonder — then the *identical, unchanged* instruction core was run against every other chat brain Meta's API serves: **Muse Spark 1.3, Spark 1.3 Contributor, Spark 1.2, Spark 1.2 Contributor, and Spark 1.1**. It passed **89/89 on every one of them, section for section**. Six brains, one unchanged sheet, six full passes. Her discipline lives in what was built around the model, not in one model's habits. All six brains ship in her in-app brain picker — pick one in the connect card; Wonder is the default. And the failures are kept in print beside the passes: the failed first run and the three clauses that fixed it, one preserved transport failure, and — in a separate lane — two discarded open-weight brains (Llama 4 Scout and Muse Glimmer) examined by the same battery, failed, and published rather than shipped. The complete exam record is [PROOF.md](PROOF.md).
 
 **Her hands work locally, on the device.**
 Three tools execute in the page itself, not in the cloud (`vvExecuteToolCall`, `vvRunToolCalls`):
@@ -50,9 +50,10 @@ On her live brain with her current instruction core: ~9 seconds per answer in a 
 
 1. Open `index.html` and search `buildSystemPrompt` — that is her instruction core, in full, nothing hidden.
 2. Search `vvToolCalculator`, `vvToolDateMath`, `vvToolVerseLookup` — her local hands.
-3. Search `mindExport` — her mind-file. Search `probeWonderKey` — her honest connect.
-4. Then open the live page and ask her something she cannot know. She'll tell you she couldn't find it. That honesty is the product.
-5. Read [ARCHITECTURE.md](ARCHITECTURE.md) — how the machine is designed and why, and [PROOF.md](PROOF.md) — the exam record behind her instruction core.
+3. Search `VV_BRAINS` — the one list her brain picker is built from: six exam-passed brains, each carrying its own call budgets, Wonder first because she is the default.
+4. Search `mindExport` — her mind-file. Search `probeWonderKey` — her honest connect.
+5. Then open the live page and ask her something she cannot know. She'll tell you she couldn't find it. That honesty is the product.
+6. Read [ARCHITECTURE.md](ARCHITECTURE.md) — how the machine is designed and why, and [PROOF.md](PROOF.md) — the exam record behind her instruction core.
 
 ---
 
