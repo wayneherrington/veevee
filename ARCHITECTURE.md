@@ -1,6 +1,6 @@
 # Architecture — how Vee Vee is built
 
-Vee Vee is one self-contained HTML file (`index.html`, 4,526 lines) that runs in any browser, on any phone, with no account, no install, and no server. This document is the design map: what each part is, why it is shaped that way, and where to find it in the file. Every claim here can be checked against the code, and her exam record is in [PROOF.md](PROOF.md).
+Vee Vee is one self-contained HTML file (`index.html`, 4,619 lines) that runs in any browser, on any phone, with no account, no install, and no server. This document is the design map: what each part is, why it is shaped that way, and where to find it in the file. Every claim here can be checked against the code, and her exam record is in [PROOF.md](PROOF.md).
 
 ---
 
@@ -63,7 +63,7 @@ Standing law (§6 of the internal blueprint): **no tool ships until a written te
 
 ## Attachments — nothing silent
 
-An owner can show Vee Vee a PDF (≤10 MB), up to 4 pictures, or a short video (≤25 MB), staged on the device and read by the connected brain. This surface was rebuilt after a field failure: the owner attached a file and saw nothing happen, because every outcome — ready, too big, wrong kind, not connected — was reported only in a small status line. Now the attach buttons are native `<label>` activations (no script-click in the path), every tap answers immediately in a visible panel under the buttons, a staged picture shows its own thumbnail with its own **Send this to VV** button, and a refusal prints at full size in the same panel. A control that can fail silently is treated as broken, even when the code underneath works.
+An owner can show Vee Vee a PDF (≤10 MB), up to 4 pictures, or a short video (≤25 MB), staged on the device and read by the connected brain. This surface was rebuilt after a field failure: the owner attached a file and saw nothing happen, because every outcome — ready, too big, wrong kind, not connected — was reported only in a small status line. Now the attach buttons are native `<label>` activations (no script-click in the path), every tap answers immediately in a visible panel under the buttons, a staged picture shows its own thumbnail with its own **Send this to VV** button, and a refusal prints at full size in the same panel. A control that can fail silently is treated as broken, even when the code underneath works. Two further field fixes from the owner's own screen recordings followed: large photos are decoded straight to their small working size (decoding a full-resolution phone photo first could exhaust the device's memory and take the page — and the picture — down with it), and the service worker never serves the page itself from cache, so an installed copy cannot quietly fall versions behind the live one. The path also keeps its own receipts: every attach step writes a timestamped line to a small on-device log inside the panel, a read interrupted by a page reload is reported as interrupted on the next open rather than vanishing, and a picture decode that hangs is failed loudly at 25 seconds instead of silently — a failure the owner can see is a failure that can be fixed.
 
 ## Memory — three kinds, kept apart
 
