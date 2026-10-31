@@ -1,6 +1,6 @@
 # Architecture — how Vee Vee is built
 
-Vee Vee is one self-contained HTML file (`index.html`, 4,485 lines) that runs in any browser, on any phone, with no account, no install, and no server. This document is the design map: what each part is, why it is shaped that way, and where to find it in the file. Every claim here can be checked against the code, and her exam record is in [PROOF.md](PROOF.md).
+Vee Vee is one self-contained HTML file (`index.html`, 4,526 lines) that runs in any browser, on any phone, with no account, no install, and no server. This document is the design map: what each part is, why it is shaped that way, and where to find it in the file. Every claim here can be checked against the code, and her exam record is in [PROOF.md](PROOF.md).
 
 ---
 
@@ -60,6 +60,10 @@ Three tools are declared to the model and executed **in the page**, with results
 - `vvToolVerseLookup` — King James verses served word-for-word from a pinned local store (1769 Oxford text), ranges whole or an honest failure, and an honest failure for references that don't exist.
 
 Standing law (§6 of the internal blueprint): **no tool ships until a written test exists that can fail it.** These three were graded on 36 recipes before shipping — see PROOF.md.
+
+## Attachments — nothing silent
+
+An owner can show Vee Vee a PDF (≤10 MB), up to 4 pictures, or a short video (≤25 MB), staged on the device and read by the connected brain. This surface was rebuilt after a field failure: the owner attached a file and saw nothing happen, because every outcome — ready, too big, wrong kind, not connected — was reported only in a small status line. Now the attach buttons are native `<label>` activations (no script-click in the path), every tap answers immediately in a visible panel under the buttons, a staged picture shows its own thumbnail with its own **Send this to VV** button, and a refusal prints at full size in the same panel. A control that can fail silently is treated as broken, even when the code underneath works.
 
 ## Memory — three kinds, kept apart
 
