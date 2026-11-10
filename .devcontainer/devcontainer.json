@@ -1,0 +1,102 @@
+
+
+```js
+// 1. The real browser functions - only run on your server
+async function search_web({ query }) {
+  const r = await fetch("https://api.tavily.com/search", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      api_key: process.env.TAVILY_API_KEY,
+      query,
+      max_results: 5,
+      include_answer: false,
+      search_depth: "basic"
+    })
+  });
+  const data = await r.json();
+  return data.results.map(x => ({
+    title: x.title,
+    url: x.url,
+    snippet: x.content?.slice(0, 4000) || ""
+  }));
+}
+
+async function open_page({ url }) {
+  const r = await fetch("https://api.tavily.com/extract", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      api_key: process.env.TAVILY_API_KEY,
+      urls: [url]
+    })
+  });
+  const data = await r.json();
+  return data.results?.[0]?.raw_content?.slice(0, 12000) || "Could not read that page.";
+}
+
+// 2. The tools you tell the model it can ask for
+const tools = [
+  {
+    type: "function",
+    function: {
+      name: "search_web",
+      description: "Search the live web for current facts, dates, prices, scores, or sources. Use this when you need to verify something.",
+      parameters: {
+        type: "object",
+        properties: { query: { type: "string" } },
+        required: ["query"]
+      }
+    }
+  },
+  {
+    type: "function",
+    function: {
+      name: "open_page",
+      description: "Open and read a specific URL found in search results.",
+      parameters: {
+        type: "object",
+        properties: { url: { type: "string" } },
+        required: ["url"]
+      }
+    }
+  }
+];
+
+// 3. The loop - model asks, your server runs it, you feed it back
+async function runWithBrowser({ modelClient, model, messages }) {
+  for (let i = 0; i < 4; i++) {
+    const res = await modelClient.chat.completions.create({
+      model,
+      messages,
+      tools,
+      tool_choice: "auto"
+    });
+
+    const msg = res.choices[0].message;
+    messages.push(msg);
+
+    if (!msg.tool_calls?.length) return msg.content; // final answer
+
+    for (const call of msg.tool_calls) {
+      const args = JSON.parse(call.function.arguments || "{}");
+      let result;
+
+      try {
+        if (call.function.name === "search_web") result = await search_web(args);
+        else if (call.function.name === "open_page") result = await open_page(args);
+        else result = { error: "Unknown tool" };
+      } catch (e) {
+        result = { error: String(e) };
+      }
+
+      messages.push({
+        role: "tool",
+        tool_call_id: call.id,
+        content: JSON.stringify(result)
+      });
+    }
+  }
+  return "I searched but couldn't finish that lookup.";
+}
+```
